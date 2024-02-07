@@ -10,6 +10,15 @@ const Card = (data) => {
     context.openProductDetail()
     context.setProductToShow(productDetail)
   }
+
+  const addProductsToCart = (event, productData)=>{
+    event.stopPropagation()
+    context.closeProductDetail()
+    context.setCount(context.count + 1)
+    context.setCartProducts([...context.cartProducts, productData])
+    console.log('cart:', context.cartProducts)
+    context.openCheckoutSideMenu()
+  }
   return (
     <div 
       className='bg-white cursor-pointer w-56 h-60 rounded-lg'
@@ -21,10 +30,10 @@ const Card = (data) => {
             <div className='absolute top-0 right-0 flex justify-center items-center bg bg-white w-6 h-6 rounded-full m-2 p-1'>
               <PlusIcon 
                 className='h-7 w-7 text-black cursor-pointer' 
-                onClick={(e) => {
-                  e.stopPropagation(); // Evita que el evento se propague hacia el div principal
-                  context.setCount(context.count + 1); // Incrementa el contador
-                }}/>
+                onClick={(event) => {
+                  addProductsToCart(event, data.data)
+                }}
+              />
             </div>
         </figure>
         <p className='flex justify-between'>
