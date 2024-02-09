@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { ShoppingCartContext } from "../../Context";
 import OrderCard from "../../Components/OrderCard";
+import { TotalPrice } from '../../Utils/index';
 import "./styles.css";
 
 const CheckoutSideMenu = () => {
@@ -11,6 +13,17 @@ const CheckoutSideMenu = () => {
   const handleDelete = (id) => {
     const filteredProducts = context.cartProducts.filter(product => product.id != id)
     context.setCartProducts(filteredProducts)
+  }
+  const handleCheckout = () => {
+    const orderToAdd = {
+      date: '',
+      products: context.cartProducts,
+      totalProducts: context.cartProducts.length,
+      totalPrice: TotalPrice(context.cartProducts)
+    }
+    context.setOrder([...context.order, orderToAdd])
+    context.setCartProducts([])
+    context.closeCheckoutSideMenu()
   }
 
   return (
@@ -27,7 +40,7 @@ const CheckoutSideMenu = () => {
           />
         </div>
       </div>
-      <div className='px-6 overflow-y-scroll'>
+      <div className='px-6 overflow-y-scroll flex-1'>
         {
           context.cartProducts.map(product => (
             <OrderCard 
@@ -41,7 +54,15 @@ const CheckoutSideMenu = () => {
           ))
         }
       </div>
-      
+      <div className='px-6 py-6'>
+        <p className='flex justify-between items-center'>
+          <span className='font-light text-xl'>Total:</span>
+          <span className='font-medium text-xl'>${TotalPrice(context.cartProducts)}</span>
+        </p>
+        <Link to='/my-orders/last'>
+          <button className="w-full bg-green-500 py-3 mt-2 text-white rounded-lg" onClick={() => handleCheckout()}>Checkout</button>
+        </Link>
+      </div>
     </aside>
   );
 };
